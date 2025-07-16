@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class PlayerSwapper {
 
@@ -61,7 +62,9 @@ public class PlayerSwapper {
     }
 
     private void swapPlayers() {
-        List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+        List<Player> players = Bukkit.getOnlinePlayers().stream()
+                .filter(p -> p.getGameMode() != GameMode.SPECTATOR)
+                .collect(Collectors.toList());
 
         if (players.size() < 2) return;
 
@@ -71,17 +74,16 @@ public class PlayerSwapper {
 
         // Erzeuge gültiges Derangement
         List<Integer> mapping = generateDerangement(players.size());
-
         for (int i = 0; i < players.size(); i++) {
 
             Player player = players.get(i);
             Player to = players.get(mapping.get(i));
-            if (player.getGameMode() == GameMode.SPECTATOR) continue;
-            if (to.getGameMode() == GameMode.SPECTATOR) continue;
+
             Location targetLocation = originalLocations.get(mapping.get(i));
             player.teleport(targetLocation);
             player.setVelocity(new Vector(0,0,0));
             player.setFallDistance(0f);
+
             Bukkit.broadcast(Component.text("§e" + player.getName() + " §7wurde mit §e" + to.getName() + " §7geswapped."));
         }
 
