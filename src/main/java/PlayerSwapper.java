@@ -3,6 +3,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -68,6 +69,8 @@ public class PlayerSwapper {
             Player player = players.get(i);
             Location targetLocation = originalLocations.get(mapping.get(i));
             player.teleport(targetLocation);
+            player.setVelocity(new Vector(0,0,0));
+            player.setFallDistance(0f);
         }
 
         Bukkit.broadcastMessage("§aAlle Spieler wurden zufällig geswapped!");
@@ -91,6 +94,4 @@ public class PlayerSwapper {
             if (deranged) return indices;
         }
     }
-
-
 }
