@@ -2,6 +2,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -72,8 +73,11 @@ public class PlayerSwapper {
         List<Integer> mapping = generateDerangement(players.size());
 
         for (int i = 0; i < players.size(); i++) {
+
             Player player = players.get(i);
             Player to = players.get(mapping.get(i));
+            if (player.getGameMode() == GameMode.SPECTATOR) continue;
+            if (to.getGameMode() == GameMode.SPECTATOR) continue;
             Location targetLocation = originalLocations.get(mapping.get(i));
             player.teleport(targetLocation);
             player.setVelocity(new Vector(0,0,0));
