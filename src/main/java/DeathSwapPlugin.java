@@ -1,7 +1,4 @@
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,6 +25,7 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
         World world = Bukkit.getWorlds().getFirst();
         world.getWorldBorder().setCenter(world.getSpawnLocation());
         world.getWorldBorder().setSize(12);
+        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         allItems = getAllItems();
         Bukkit.getPluginManager().registerEvents(this, this);
         getCommand("start").setExecutor(new StartCommand(this));
@@ -53,6 +51,7 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
             player.setGameMode(GameMode.ADVENTURE);
         }
     }
+
     private List<ItemStack> getRandomizedDrops(Block block) {
         Random random = ThreadLocalRandom.current();
 
@@ -77,6 +76,7 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
                 .filter(material -> material != Material.ENCHANTED_BOOK)
                 .filter(material -> material != Material.GOAT_HORN)
                 .filter(material -> material != Material.JIGSAW)
+                .filter(material -> material != Material.DEBUG_STICK)
                 .filter(material -> !material.name().contains("DISC"))
                 .filter(material -> !material.name().contains("LEGACY"))
                 .filter(material -> !material.name().contains("COMMAND"))
@@ -84,6 +84,8 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
                 .filter(material -> !material.name().contains("BED"))
                 .filter(material -> !material.name().contains("POTION"))
                 .filter(material -> !material.name().contains("TIPPED_ARROW"))
+                .filter(material -> !material.name().contains("TEMPLATE"))
+                .filter(material -> !material.name().contains("PATTERN"))
                 .collect(Collectors.toList());
     }
 
