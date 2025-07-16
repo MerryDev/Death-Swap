@@ -1,3 +1,6 @@
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -5,7 +8,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class PlayerSwapper {
 
@@ -41,7 +47,7 @@ public class PlayerSwapper {
             public void run() {
                 if (seconds > 0) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        player.sendTitle("§cSwap in", "§e" + seconds, 0, 20, 0);
+                        player.sendTitlePart(TitlePart.TITLE, Component.text("Swap in: ", NamedTextColor.RED).append(Component.text(seconds, NamedTextColor.YELLOW)));
                     }
                     seconds--;
                 } else {
@@ -73,7 +79,7 @@ public class PlayerSwapper {
             player.setFallDistance(0f);
         }
 
-        Bukkit.broadcastMessage("§aAlle Spieler wurden zufällig geswapped!");
+        Bukkit.broadcast(Component.text("Alle Spieler wurden zufällig geswapped!", NamedTextColor.GREEN));
     }
 
     private List<Integer> generateDerangement(int size) {
