@@ -51,6 +51,9 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
         if(player.getGameMode() == GameMode.SPECTATOR) return;
         player.setGameMode(GameMode.ADVENTURE);
         player.setInvulnerable(true);
+        ItemStack steak = new ItemStack(Material.COOKED_BEEF);
+        steak.setAmount(64);
+        player.getInventory().addItem(steak);
     }
 
     private List<ItemStack> getRandomizedDrops(Block block) {
