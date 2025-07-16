@@ -73,10 +73,12 @@ public class PlayerSwapper {
 
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
+            Player to = players.get(mapping.get(i));
             Location targetLocation = originalLocations.get(mapping.get(i));
             player.teleport(targetLocation);
             player.setVelocity(new Vector(0,0,0));
             player.setFallDistance(0f);
+            Bukkit.broadcast(Component.text("§e" + player.getName() + " §7wurde mit §e" + to.getName() + " §7geswapped."));
         }
 
         Bukkit.broadcast(Component.text("Alle Spieler wurden zufällig geswapped!", NamedTextColor.GREEN));
