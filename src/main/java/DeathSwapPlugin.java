@@ -64,6 +64,9 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
     private List<Material> getAllItems() {
         return Stream.of(Material.values())
                 .filter(Material::isItem)
+                .filter(material -> !material.name().contains("LEGACY"))
+                .filter(material -> !material.name().contains("COMMAND"))
+                .filter(material -> !material.name().contains("STRUCTURE"))
                 .collect(Collectors.toList());
     }
 
