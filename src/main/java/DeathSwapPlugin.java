@@ -78,6 +78,8 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
                 .filter(material -> material != Material.GOAT_HORN)
                 .filter(material -> material != Material.JIGSAW)
                 .filter(material -> material != Material.DEBUG_STICK)
+                .filter(material -> material != Material.LIGHT)
+                .filter(material -> !material.name().contains("POTTERY_SHERD"))
                 .filter(material -> !material.name().contains("DISC"))
                 .filter(material -> !material.name().contains("LEGACY"))
                 .filter(material -> !material.name().contains("COMMAND"))
