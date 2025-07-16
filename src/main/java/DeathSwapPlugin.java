@@ -10,6 +10,7 @@ public class DeathSwapPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().info("DeathSwapPlugin enabled!");
+        new PlayerSwapper(this).start();
     }
 
     private List<Material> getAllItems() {
@@ -17,5 +18,6 @@ public class DeathSwapPlugin extends JavaPlugin {
                 .filter(Material::isItem)
                 .collect(Collectors.toList());
     }
+
 }
 
