@@ -1,6 +1,9 @@
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -21,9 +24,15 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        new PlayerSwapper(this).start();
+        World world = Bukkit.getWorlds().getFirst();
+        world.getWorldBorder().setCenter(world.getSpawnLocation());
+        world.getWorldBorder().setSize(6);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.setGameMode(GameMode.ADVENTURE);
+        }
         allItems = getAllItems();
         Bukkit.getPluginManager().registerEvents(this, this);
+        getCommand("start").setExecutor(new StartCommand(this));
         getLogger().info("DeathSwapPlugin enabled!");
     }
 

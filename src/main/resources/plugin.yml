@@ -2,3 +2,6 @@ name: DeathSwap
 version: 1.0
 main: DeathSwapPlugin
 api-version: 1.21
+commands:
+  start:
+    description: Startet das Player Swapping
