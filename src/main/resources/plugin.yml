@@ -1,3 +1,4 @@
 name: DeathSwap
-version: '1.21'
+version: 1.0
 main: DeathSwapPlugin
+api-version: 1.21
