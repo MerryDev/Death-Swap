@@ -57,21 +57,40 @@ public class PlayerSwapper {
 
         if (players.size() < 2) return;
 
-        // Positionen merken
-        List<Location> locations = players.stream()
+        List<Location> originalLocations = players.stream()
                 .map(Player::getLocation)
                 .toList();
 
-        // Durchmischen
-        Collections.shuffle(players, random);
+        // Erzeuge gültiges Derangement
+        List<Integer> mapping = generateDerangement(players.size());
 
-        // Teleportieren im Ring
         for (int i = 0; i < players.size(); i++) {
-            Player current = players.get(i);
-            Location targetLoc = locations.get((i + 1) % players.size());
-            current.teleport(targetLoc);
+            Player player = players.get(i);
+            Location targetLocation = originalLocations.get(mapping.get(i));
+            player.teleport(targetLocation);
         }
 
         Bukkit.broadcastMessage("§aAlle Spieler wurden zufällig geswapped!");
     }
+
+    private List<Integer> generateDerangement(int size) {
+        List<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < size; i++) indices.add(i);
+
+        while (true) {
+            Collections.shuffle(indices, random);
+
+            boolean deranged = true;
+            for (int i = 0; i < size; i++) {
+                if (indices.get(i) == i) {
+                    deranged = false;
+                    break;
+                }
+            }
+
+            if (deranged) return indices;
+        }
+    }
+
+
 }
