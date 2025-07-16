@@ -24,7 +24,7 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
         World world = Bukkit.getWorlds().getFirst();
         world.getWorldBorder().setCenter(world.getSpawnLocation());
-        world.getWorldBorder().setSize(12);
+        world.getWorldBorder().setSize(20);
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         allItems = getAllItems();
         Bukkit.getPluginManager().registerEvents(this, this);
