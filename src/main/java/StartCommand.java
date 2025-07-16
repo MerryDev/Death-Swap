@@ -19,6 +19,7 @@ public class StartCommand implements CommandExecutor {
         new PlayerSwapper(swapper).start();
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.setGameMode(GameMode.SURVIVAL);
+            player.setInvulnerable(false);
         }
         World world = Bukkit.getWorlds().getFirst();
         world.getWorldBorder().reset();

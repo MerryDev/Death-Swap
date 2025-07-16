@@ -46,9 +46,11 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         World world = Bukkit.getWorlds().getFirst();
-        Bukkit.getScheduler().runTaskLater(this, () -> event.getPlayer().teleport(world.getSpawnLocation()), 5);
-        if(event.getPlayer().getGameMode() == GameMode.SPECTATOR) return;
-        event.getPlayer().setGameMode(GameMode.ADVENTURE);
+        Player player = event.getPlayer();
+        Bukkit.getScheduler().runTaskLater(this, () -> player.teleport(world.getSpawnLocation()), 5);
+        if(player.getGameMode() == GameMode.SPECTATOR) return;
+        player.setGameMode(GameMode.ADVENTURE);
+        player.setInvulnerable(true);
     }
 
     private List<ItemStack> getRandomizedDrops(Block block) {
