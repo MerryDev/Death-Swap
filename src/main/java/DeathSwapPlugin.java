@@ -1,6 +1,7 @@
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -8,8 +9,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,22 +30,37 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        if (event.isCancelled()) return;
+
+        Player player = event.getPlayer();
         Block block = event.getBlock();
 
-        List<ItemStack> drops = new ArrayList<>(block.getDrops());
-        if (drops.isEmpty()) return;
+        // Droppen verhindern
+        event.setDropItems(false);
 
-        block.getDrops().clear();
-        List<ItemStack> newDrops = new ArrayList<>();
-        for (ItemStack drop : drops) {
-            if (!drop.getType().isItem()) continue;
-            ItemStack randomized = ItemStack.of(allItems.get(new Random().nextInt(allItems.size() - 1)), drop.getAmount());
+        // Drops randomisieren
+        List<ItemStack> randomizedDrops = getRandomizedDrops(block);
 
-            newDrops.add(randomized);
-        }
-
-        block.getDrops().addAll(newDrops);
+        // Drops droppen
+        randomizedDrops.forEach(drop ->
+                block.getWorld().dropItemNaturally(block.getLocation(), drop));
     }
+
+    private List<ItemStack> getRandomizedDrops(Block block) {
+        List<Material> possibleItems = getAllItems();
+        Random random = ThreadLocalRandom.current();
+
+        // Die Menge an Drops entspricht der Menge an ursprünglichen Drops
+        Collection<ItemStack> originalDrops = block.getDrops();
+
+        List<ItemStack> randomized = new ArrayList<>();
+        for (ItemStack ignored : originalDrops) {
+            Material randomMaterial = possibleItems.get(random.nextInt(possibleItems.size()));
+            randomized.add(new ItemStack(randomMaterial, 1)); // 1 pro Drop, kannst du anpassen
+        }
+        return randomized;
+    }
+
 
     private List<Material> getAllItems() {
         return Stream.of(Material.values())
