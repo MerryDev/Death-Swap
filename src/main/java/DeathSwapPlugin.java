@@ -27,10 +27,7 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
         World world = Bukkit.getWorlds().getFirst();
         world.getWorldBorder().setCenter(world.getSpawnLocation());
-        world.getWorldBorder().setSize(6);
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.setGameMode(GameMode.ADVENTURE);
-        }
+        world.getWorldBorder().setSize(12);
         allItems = getAllItems();
         Bukkit.getPluginManager().registerEvents(this, this);
         getCommand("start").setExecutor(new StartCommand(this));
@@ -52,6 +49,9 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         World world = Bukkit.getWorlds().getFirst();
         Bukkit.getScheduler().runTaskLater(this, () -> event.getPlayer().teleport(world.getSpawnLocation()), 5);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.setGameMode(GameMode.ADVENTURE);
+        }
     }
     private List<ItemStack> getRandomizedDrops(Block block) {
         Random random = ThreadLocalRandom.current();
