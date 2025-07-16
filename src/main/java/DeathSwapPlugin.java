@@ -35,13 +35,13 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
 
-        // Droppen verhindern
+        // Standarddrops verhindern
         event.setDropItems(false);
 
         // Drops randomisieren
         List<ItemStack> randomizedDrops = getRandomizedDrops(block);
 
-        // Drops droppen
+        // Randomized Drops droppen
         randomizedDrops.forEach(drop ->
                 block.getWorld().dropItemNaturally(block.getLocation(), drop));
     }
@@ -50,13 +50,12 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
         List<Material> possibleItems = getAllItems();
         Random random = ThreadLocalRandom.current();
 
-        // Die Menge an Drops entspricht der Menge an ursprünglichen Drops
         Collection<ItemStack> originalDrops = block.getDrops();
-
         List<ItemStack> randomized = new ArrayList<>();
-        for (ItemStack ignored : originalDrops) {
+
+        for (ItemStack original : originalDrops) {
             Material randomMaterial = possibleItems.get(random.nextInt(possibleItems.size()));
-            randomized.add(new ItemStack(randomMaterial, 1)); // 1 pro Drop, kannst du anpassen
+            randomized.add(new ItemStack(randomMaterial, original.getAmount()));
         }
         return randomized;
     }
