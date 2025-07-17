@@ -53,10 +53,11 @@ public class InGameState extends AbstractGameState implements Listener {
 
     }
 
+    // Event logic
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if(!(this.context.currentState() instanceof InGameState)) return;
+        if (!(this.context.currentState() instanceof InGameState)) return;
         if (event.isCancelled()) return;
 
         Block block = event.getBlock();

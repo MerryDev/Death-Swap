@@ -83,7 +83,7 @@ public class PlayerSwapper {
 
             Location targetLocation = originalLocations.get(mapping.get(i));
             player.teleport(targetLocation);
-            player.setVelocity(new Vector(0,0,0));
+            player.setVelocity(new Vector(0, 0, 0));
             player.setFallDistance(0f);
 
             Bukkit.broadcast(Component.text("§e" + player.getName() + " §7wurde mit §e" + to.getName() + " §7geswapped."));
