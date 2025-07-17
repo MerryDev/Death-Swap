@@ -49,8 +49,11 @@ public class ResetCommand implements CommandExecutor {
             commandSender.sendMessage(Component.text("§cDu hast keine berechtigung für diesen Command!"));
             return true;
         }
+        player.sendMessage(Component.text("§cDas Spiel wird zurückgesetzt. Bitte warten."));
+        World pregameWorld = Bukkit.getWorld("pregame");
+        player.teleport(pregameWorld.getSpawnLocation());
         context.setGameState(GameState.LOBBY);
-        player.sendMessage(Component.text("§aDas Spiel wurde zurück gesetzt."));
+
         WorldUtil wu = new WorldUtil(plugin, new Random());
         List<World> worlds =List.of(
                 Objects.requireNonNull(Bukkit.getWorld("game")),
@@ -62,6 +65,7 @@ public class ResetCommand implements CommandExecutor {
             wu.deleteWorld(world);
         }
         wu.createWorlds();
+        player.sendMessage(Component.text("§aDas Spiel wurde zurückgesetzt."));
         return true;
     }
 }

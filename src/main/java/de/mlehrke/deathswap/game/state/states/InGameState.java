@@ -62,6 +62,9 @@ public class InGameState extends AbstractGameState implements Listener {
             player.teleport(world.getSpawnLocation());
             player.setGameMode(GameMode.SURVIVAL);
             player.setInvulnerable(false);
+            ItemStack beef = new ItemStack(Material.COOKED_BEEF);
+            beef.setAmount(64);
+            player.getInventory().addItem(beef);
         }
         plugin.swapper().start();
         timer.paused(false); // In case the timer had been reset, it needs to be unpaused to run again

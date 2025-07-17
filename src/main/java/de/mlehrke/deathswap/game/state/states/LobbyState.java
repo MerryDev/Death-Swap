@@ -3,10 +3,7 @@ package de.mlehrke.deathswap.game.state.states;
 import de.mlehrke.deathswap.DeathSwapPlugin;
 import de.mlehrke.deathswap.game.state.AbstractGameState;
 import de.mlehrke.deathswap.game.state.GameStateContext;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.GameRule;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,6 +30,9 @@ public class LobbyState extends AbstractGameState implements Listener {
             return;
         }
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        world.setClearWeatherDuration(Integer.MAX_VALUE);
+        preparePlayers();
     }
 
     @Override
@@ -59,5 +59,17 @@ public class LobbyState extends AbstractGameState implements Listener {
         if (!(this.context.currentState() instanceof LobbyState)) return;
         if (!(event.getEntity() instanceof Player)) return;
         event.setCancelled(true);
+    }
+
+    private void preparePlayers() {
+        World world = Bukkit.getWorld("pregame");
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.heal(20);
+            player.setFoodLevel(20);
+            player.teleport(world.getSpawnLocation());
+            player.getInventory().clear();
+            player.setGameMode(GameMode.ADVENTURE);
+            player.setInvulnerable(true);
+        }
     }
 }
