@@ -39,16 +39,18 @@ public class WorldUtil {
 
     private boolean deleteWorldFolder(File path) {
         if (!path.exists()) return false;
-        File[] files = path.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    deleteWorldFolder(file);
-                } else {
-                    file.delete();
+        new Thread(() -> {
+            File[] files = path.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        deleteWorldFolder(file);
+                    } else {
+                        file.delete();
+                    }
                 }
             }
-        }
+        }).start();
         return path.delete();
     }
 
