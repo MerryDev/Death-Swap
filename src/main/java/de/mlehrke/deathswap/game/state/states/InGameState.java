@@ -78,10 +78,10 @@ public class InGameState extends AbstractGameState implements Listener {
         if (STACKING_PLANTS.contains(block.getType())) {
             Block current = block.getRelative(BlockFace.UP);
             while (STACKING_PLANTS.contains(current.getType())) {
-                current.setType(Material.AIR); // Manuell abbauen, sonst droppt Minecraft selbst
                 List<ItemStack> drops = getRandomizedDrops(current);
                 Block finalCurrent = current;
                 drops.forEach(drop -> finalCurrent.getWorld().dropItemNaturally(finalCurrent.getLocation(), drop));
+                current.setType(Material.AIR); // Manuell abbauen, sonst droppt Minecraft selbst
                 current = current.getRelative(BlockFace.UP);
             }
         }
@@ -96,7 +96,6 @@ public class InGameState extends AbstractGameState implements Listener {
         for (ItemStack original : originalDrops) {
             int amount = original.getAmount();
             if (amount <= 0) continue;
-
             Material randomMaterial = allItems.get(random.nextInt(allItems.size()));
             randomized.add(new ItemStack(randomMaterial, original.getAmount()));
         }
