@@ -27,9 +27,11 @@ public class LobbyState extends AbstractGameState implements Listener {
 
     @Override
     public void start() {
-        World world = Bukkit.getWorlds().getFirst();
-        world.getWorldBorder().setCenter(world.getSpawnLocation());
-        world.getWorldBorder().setSize(20);
+        World world = Bukkit.getWorld("pregame");
+        if (world == null) {
+            plugin.getLogger().severe("Pregame World existiert nicht! Start abgebrochen.");
+            return;
+        }
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
     }
 
@@ -37,13 +39,15 @@ public class LobbyState extends AbstractGameState implements Listener {
     public void stop() {
     }
 
-
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         if (!(this.context.currentState() instanceof LobbyState)) return;
 
-        World world = Bukkit.getWorlds().getFirst();
+        World world = Bukkit.getWorld("pregame");
+        if (world == null) return;
         Player player = event.getPlayer();
+        player.heal(20);
+        player.setFoodLevel(20);
         Bukkit.getScheduler().runTaskLater(plugin, () -> player.teleport(world.getSpawnLocation()), 5L);
         player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);

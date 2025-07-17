@@ -7,7 +7,12 @@ import de.mlehrke.deathswap.event.InvseeListener;
 import de.mlehrke.deathswap.game.state.GameState;
 import de.mlehrke.deathswap.game.state.GameStateContext;
 import de.mlehrke.deathswap.util.PlayerSwapper;
+import de.mlehrke.deathswap.util.StructureSpawner;
+import de.mlehrke.deathswap.util.VoidChunkGenerator;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,6 +27,12 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+
+        this.saveResource("structure/pregame.nbt", false);
+
+        World world = createVoidWorld();
+        Location structureLocation = new Location(world, 0,90,0);
+        StructureSpawner.spawnStructure(this,"pregame", structureLocation);
         this.swapper = new PlayerSwapper(this);
         context = new GameStateContext(this);
         invseeCommand = new InvseeCommand(context);
@@ -45,5 +56,10 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
         return this.swapper;
     }
 
+    private World createVoidWorld() {
+        WorldCreator creator = new WorldCreator("pregame");
+        creator.generator(new VoidChunkGenerator());
+        return creator.createWorld();
+    }
 }
 
