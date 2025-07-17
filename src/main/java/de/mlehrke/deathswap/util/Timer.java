@@ -19,10 +19,10 @@ public final class Timer {
     }
 
     public void start() {
-        if (paused) return;
+       Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+           if (paused) return;
 
-        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            time++;
+           time++;
 
             String readableTime = formatTime();
             for (var player : Bukkit.getOnlinePlayers()) {
