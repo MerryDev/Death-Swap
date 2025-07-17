@@ -35,7 +35,6 @@ public class LobbyState extends AbstractGameState implements Listener {
 
     @Override
     public void stop() {
-
     }
 
 
