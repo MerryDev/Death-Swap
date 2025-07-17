@@ -2,12 +2,15 @@ package de.mlehrke.deathswap;
 
 import de.mlehrke.deathswap.command.InvseeCommand;
 import de.mlehrke.deathswap.command.StartCommand;
+import de.mlehrke.deathswap.command.SwapNowCommand;
 import de.mlehrke.deathswap.event.InvseeListener;
 import de.mlehrke.deathswap.game.state.GameState;
 import de.mlehrke.deathswap.game.state.GameStateContext;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Objects;
 
 
 public class DeathSwapPlugin extends JavaPlugin implements Listener {
@@ -30,8 +33,9 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
     }
 
     private void registerCommands() {
-        getCommand("start").setExecutor(new StartCommand(context));
-        getCommand("invsee").setExecutor(invseeCommand);
+        Objects.requireNonNull(getCommand("start")).setExecutor(new StartCommand(context));
+        Objects.requireNonNull(getCommand("invsee")).setExecutor(invseeCommand);
+        Objects.requireNonNull(getCommand("swapnow")).setExecutor(new SwapNowCommand(this, context));
     }
 }
 
