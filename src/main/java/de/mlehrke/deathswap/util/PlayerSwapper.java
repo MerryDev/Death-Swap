@@ -1,3 +1,5 @@
+package de.mlehrke.deathswap.util;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.TitlePart;
@@ -7,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -19,6 +22,7 @@ public class PlayerSwapper {
 
     private final JavaPlugin plugin;
     private final Random random = new Random();
+    private BukkitTask task;
 
     public PlayerSwapper(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -33,7 +37,7 @@ public class PlayerSwapper {
         int maxTicks = 10 * 60 * 20;
         int delay = minTicks + random.nextInt(maxTicks - minTicks + 1);
 
-        new BukkitRunnable() {
+        task = new BukkitRunnable() {
             @Override
             public void run() {
                 startCountdown();
@@ -41,7 +45,7 @@ public class PlayerSwapper {
         }.runTaskLater(plugin, delay);
     }
 
-    private void startCountdown() {
+    public void startCountdown() {
         new BukkitRunnable() {
             int seconds = 10;
 
@@ -81,10 +85,10 @@ public class PlayerSwapper {
 
             Location targetLocation = originalLocations.get(mapping.get(i));
             player.teleport(targetLocation);
-            player.setVelocity(new Vector(0,0,0));
+            player.setVelocity(new Vector(0, 0, 0));
             player.setFallDistance(0f);
 
-            Bukkit.broadcast(Component.text("§e" + player.getName() + " §7wurde mit §e" + to.getName() + " §7geswapped."));
+            Bukkit.broadcast(Component.text("§e" + player.getName() + " §7ist nun in der Trap von §c" + to.getName() + " §7."));
         }
 
         Bukkit.broadcast(Component.text("Alle Spieler wurden zufällig geswapped!", NamedTextColor.GREEN));
@@ -107,5 +111,9 @@ public class PlayerSwapper {
 
             if (deranged) return indices;
         }
+    }
+
+    public BukkitTask task() {
+        return this.task;
     }
 }

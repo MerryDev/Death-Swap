@@ -1,12 +1,18 @@
-import org.bukkit.*;
+package de.mlehrke.deathswap.game.state.states;
+
+import de.mlehrke.deathswap.DeathSwapPlugin;
+import de.mlehrke.deathswap.game.state.AbstractGameState;
+import de.mlehrke.deathswap.game.state.GameStateContext;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,24 +22,41 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DeathSwapPlugin extends JavaPlugin implements Listener {
+public class InGameState extends AbstractGameState implements Listener {
 
-    private List<Material> allItems;
+    private final DeathSwapPlugin plugin;
+    private final GameStateContext context;
+    private final List<Material> allItems;
+
+    public InGameState(DeathSwapPlugin plugin, GameStateContext context) {
+        super(context);
+        this.plugin = plugin;
+        this.context = context;
+        this.allItems = getAllItems();
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
 
     @Override
-    public void onEnable() {
+    public void start() {
         World world = Bukkit.getWorlds().getFirst();
-        world.getWorldBorder().setCenter(world.getSpawnLocation());
-        world.getWorldBorder().setSize(20);
-        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        allItems = getAllItems();
-        Bukkit.getPluginManager().registerEvents(this, this);
-        getCommand("start").setExecutor(new StartCommand(this));
-        getLogger().info("DeathSwapPlugin enabled!");
+        world.getWorldBorder().reset();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.setGameMode(GameMode.SURVIVAL);
+            player.setInvulnerable(false);
+        }
+        plugin.swapper().start();
     }
+
+    @Override
+    public void stop() {
+
+    }
+
+    // Event logic
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        if (!(this.context.currentState() instanceof InGameState)) return;
         if (event.isCancelled()) return;
 
         Block block = event.getBlock();
@@ -43,19 +66,6 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
         randomizedDrops.forEach(drop -> block.getWorld().dropItemNaturally(block.getLocation(), drop));
     }
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        World world = Bukkit.getWorlds().getFirst();
-        Player player = event.getPlayer();
-        Bukkit.getScheduler().runTaskLater(this, () -> player.teleport(world.getSpawnLocation()), 5);
-        if(player.getGameMode() == GameMode.SPECTATOR) return;
-        player.setGameMode(GameMode.ADVENTURE);
-        player.setInvulnerable(true);
-        ItemStack steak = new ItemStack(Material.COOKED_BEEF);
-        steak.setAmount(64);
-        player.getInventory().addItem(steak);
-    }
-
     private List<ItemStack> getRandomizedDrops(Block block) {
         Random random = ThreadLocalRandom.current();
 
@@ -63,12 +73,14 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
         List<ItemStack> randomized = new ArrayList<>();
 
         for (ItemStack original : originalDrops) {
+            int amount = original.getAmount();
+            if (amount <= 0) continue;
+
             Material randomMaterial = allItems.get(random.nextInt(allItems.size()));
             randomized.add(new ItemStack(randomMaterial, original.getAmount()));
         }
         return randomized;
     }
-
 
     private List<Material> getAllItems() {
         return Stream.of(Material.values())
@@ -93,6 +105,7 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
                 .filter(material -> !material.name().contains("TEMPLATE"))
                 .filter(material -> !material.name().contains("PATTERN"))
                 .collect(Collectors.toList());
+
     }
 
     private boolean isNotArmor(Material material) {
@@ -102,6 +115,4 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
                 material.name().contains("HELMET")
         );
     }
-
 }
-
