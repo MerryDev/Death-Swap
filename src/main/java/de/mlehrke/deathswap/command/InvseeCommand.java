@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -43,6 +44,11 @@ public class InvseeCommand implements CommandExecutor {
 
         if (target == null || !target.isOnline()) {
             player.sendMessage(Component.text("§cDieser Spieler ist entweder offline oder existiert nicht!"));
+            return true;
+        }
+
+        if(player == target) {
+            player.sendMessage("§aBitte versuche nicht dein eigenes Inventar zu öffnen...");
             return true;
         }
 
