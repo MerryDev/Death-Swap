@@ -56,6 +56,7 @@ public class InGameState extends AbstractGameState implements Listener {
         World world = Bukkit.getWorld("game");
         if (world == null) {
             worldUtil.createWorlds();
+            world = Bukkit.getWorld("game");
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.teleport(world.getSpawnLocation());
