@@ -5,3 +5,5 @@ api-version: 1.21
 commands:
   start:
     description: Startet das Player Swapping
+  invsee:
+    description: Lässt spieler in das Inventar von anderen schauen. Admins können inventare bearbeiten.
