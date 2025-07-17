@@ -31,7 +31,7 @@ public class PlayerSwapper {
     public void start() {
         scheduleNextSwap();
     }
-
+    public void stop() {task.cancel();}
     private void scheduleNextSwap() {
         int minTicks = 7 * 60 * 20;
         int maxTicks = 10 * 60 * 20;

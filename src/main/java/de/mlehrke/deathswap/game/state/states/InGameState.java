@@ -74,6 +74,7 @@ public class InGameState extends AbstractGameState implements Listener {
     @Override
     public void stop() {
         timer.reset();
+        plugin.swapper().stop();
     }
 
     // Event logic
