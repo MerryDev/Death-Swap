@@ -1,6 +1,6 @@
 name: DeathSwap
 version: 1.0
-main: DeathSwapPlugin
+main: de.mlehrke.deathswap.DeathSwapPlugin
 api-version: 1.21
 commands:
   start:

@@ -1,12 +1,13 @@
-import org.bukkit.*;
+package de.mlehrke.deathswap.event;
+
+import de.mlehrke.deathswap.DeathSwapPlugin;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,21 +17,16 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DeathSwapPlugin extends JavaPlugin implements Listener {
+public class BlockBreakListener implements Listener {
 
-    private List<Material> allItems;
+    private final DeathSwapPlugin plugin;
+    private final List<Material> allItems;
 
-    @Override
-    public void onEnable() {
-        World world = Bukkit.getWorlds().getFirst();
-        world.getWorldBorder().setCenter(world.getSpawnLocation());
-        world.getWorldBorder().setSize(20);
-        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        allItems = getAllItems();
-        Bukkit.getPluginManager().registerEvents(this, this);
-        getCommand("start").setExecutor(new StartCommand(this));
-        getLogger().info("DeathSwapPlugin enabled!");
+    public BlockBreakListener(DeathSwapPlugin plugin) {
+        this.plugin = plugin;
+        this.allItems = getAllItems();
     }
+
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -41,19 +37,6 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
 
         List<ItemStack> randomizedDrops = getRandomizedDrops(block);
         randomizedDrops.forEach(drop -> block.getWorld().dropItemNaturally(block.getLocation(), drop));
-    }
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        World world = Bukkit.getWorlds().getFirst();
-        Player player = event.getPlayer();
-        Bukkit.getScheduler().runTaskLater(this, () -> player.teleport(world.getSpawnLocation()), 5);
-        if(player.getGameMode() == GameMode.SPECTATOR) return;
-        player.setGameMode(GameMode.ADVENTURE);
-        player.setInvulnerable(true);
-        ItemStack steak = new ItemStack(Material.COOKED_BEEF);
-        steak.setAmount(64);
-        player.getInventory().addItem(steak);
     }
 
     private List<ItemStack> getRandomizedDrops(Block block) {
@@ -68,7 +51,6 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
         }
         return randomized;
     }
-
 
     private List<Material> getAllItems() {
         return Stream.of(Material.values())
@@ -103,5 +85,8 @@ public class DeathSwapPlugin extends JavaPlugin implements Listener {
         );
     }
 
-}
+    public void registerEvent() {
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
 
+}
