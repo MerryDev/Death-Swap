@@ -74,6 +74,9 @@ public class InGameState extends AbstractGameState implements Listener {
         List<ItemStack> randomized = new ArrayList<>();
 
         for (ItemStack original : originalDrops) {
+            int amount = original.getAmount();
+            if (amount <= 0) continue;
+
             Material randomMaterial = allItems.get(random.nextInt(allItems.size()));
             randomized.add(new ItemStack(randomMaterial, original.getAmount()));
         }
@@ -103,6 +106,7 @@ public class InGameState extends AbstractGameState implements Listener {
                 .filter(material -> !material.name().contains("TEMPLATE"))
                 .filter(material -> !material.name().contains("PATTERN"))
                 .collect(Collectors.toList());
+
     }
 
     private boolean isNotArmor(Material material) {
