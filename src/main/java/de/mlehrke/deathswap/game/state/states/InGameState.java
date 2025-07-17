@@ -3,6 +3,7 @@ package de.mlehrke.deathswap.game.state.states;
 import de.mlehrke.deathswap.DeathSwapPlugin;
 import de.mlehrke.deathswap.game.state.AbstractGameState;
 import de.mlehrke.deathswap.game.state.GameStateContext;
+import de.mlehrke.deathswap.util.WorldUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -27,7 +28,8 @@ public class InGameState extends AbstractGameState implements Listener {
     private final DeathSwapPlugin plugin;
     private final GameStateContext context;
     private final List<Material> allItems;
-  
+    private WorldUtil worldUtil;
+
     private final Set<Material> STACKING_PLANTS = Set.of(
             Material.SUGAR_CANE,
             Material.CACTUS,
@@ -42,6 +44,7 @@ public class InGameState extends AbstractGameState implements Listener {
 
     public InGameState(DeathSwapPlugin plugin, GameStateContext context) {
         super(context);
+        worldUtil = new WorldUtil(plugin, new Random());
         this.plugin = plugin;
         this.context = context;
         this.allItems = getAllItems();
@@ -52,8 +55,7 @@ public class InGameState extends AbstractGameState implements Listener {
     public void start() {
         World world = Bukkit.getWorld("game");
         if (world == null) {
-            plugin.getLogger().severe("Game world doesnt exist. Skipping...");
-            return;
+            worldUtil.createWorlds();
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.teleport(world.getSpawnLocation());
@@ -72,6 +74,16 @@ public class InGameState extends AbstractGameState implements Listener {
     public void stop() {
         context.timer().reset();
         plugin.swapper().stop();
+
+        List<World> worlds =List.of(
+                Objects.requireNonNull(Bukkit.getWorld("game")),
+                Objects.requireNonNull(Bukkit.getWorld("game_nether")),
+                Objects.requireNonNull(Bukkit.getWorld("game_the_end"))
+        );
+        for (World world : worlds) {
+            if (world == null) continue;
+            worldUtil.deleteWorld(world);
+        }
     }
 
     // Event logic

@@ -53,18 +53,6 @@ public class ResetCommand implements CommandExecutor {
         World pregameWorld = Bukkit.getWorld("pregame");
         player.teleport(pregameWorld.getSpawnLocation());
         context.setGameState(GameState.LOBBY);
-
-        WorldUtil wu = new WorldUtil(plugin, new Random());
-        List<World> worlds =List.of(
-                Objects.requireNonNull(Bukkit.getWorld("game")),
-                Objects.requireNonNull(Bukkit.getWorld("game_nether")),
-                Objects.requireNonNull(Bukkit.getWorld("game_the_end"))
-        );
-        for (World world : worlds) {
-            if (world == null) continue;
-            wu.deleteWorld(world);
-        }
-        wu.createWorlds();
         player.sendMessage(Component.text("§aDas Spiel wurde zurückgesetzt."));
         return true;
     }
