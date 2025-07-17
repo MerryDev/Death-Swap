@@ -33,6 +33,7 @@ public class LobbyState extends AbstractGameState implements Listener {
         }
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         world.setClearWeatherDuration(Integer.MAX_VALUE);
         preparePlayers();
     }
