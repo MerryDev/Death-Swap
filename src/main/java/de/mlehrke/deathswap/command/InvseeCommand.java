@@ -8,6 +8,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -35,12 +37,12 @@ public class InvseeCommand implements CommandExecutor {
             return true;
         }
 
-        if (args.length != 1) {
-            player.sendMessage(Component.text("§cBenutzung: /invsee <spieler>"));
+        if (args.length < 1) {
+            player.sendMessage(Component.text("§cBenutzung: /invsee <spieler> [armor]"));
             return true;
         }
-        Player target = Bukkit.getPlayerExact(args[0]);
 
+        Player target = Bukkit.getPlayerExact(args[0]);
         if (target == null || !target.isOnline()) {
             player.sendMessage(Component.text("§cDieser Spieler ist entweder offline oder existiert nicht!"));
             return true;
@@ -51,6 +53,18 @@ public class InvseeCommand implements CommandExecutor {
             return true;
         }
 
+        if (args.length == 2 && args[1].equalsIgnoreCase("armor")) {
+            Inventory armorView = Bukkit.createInventory(null, 9, Component.text("Armor: " + target.getName() + " (Schreibgeschützt)"));
+
+            ItemStack[] armor = target.getInventory().getArmorContents();
+            for (int i = 0; i < armor.length; i++) {
+                armorView.setItem(i, armor[i]);
+            }
+
+            player.openInventory(armorView);
+            readOnlyViewers.add(player.getUniqueId());
+            return true;
+        }
         player.openInventory(target.getInventory());
         if (!player.hasPermission("invsee.edit")) {
             readOnlyViewers.add(player.getUniqueId());
