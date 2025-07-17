@@ -66,7 +66,7 @@ public class InvseeCommand implements CommandExecutor {
             return true;
         }
         player.openInventory(target.getInventory());
-        if (!player.hasPermission("invsee.edit")) {
+        if (!player.hasPermission("deathswap.invsee.edit")) {
             readOnlyViewers.add(player.getUniqueId());
         }
         return true;

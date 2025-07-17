@@ -29,6 +29,10 @@ public class StartCommand implements CommandExecutor {
             sender.sendMessage(Component.text("§cDas Spiel benötigt mindestens 2 Spieler zum starten!"));
             return true;
         }
+        if (!sender.hasPermission("deathswap.start")) {
+            sender.sendMessage(Component.text("§cDu hast keine berechtigung für diesen Command!"));
+            return true;
+        }
         context.setGameState(GameState.INGAME);
         sender.sendMessage("§aSwapping gestartet!");
         return true;

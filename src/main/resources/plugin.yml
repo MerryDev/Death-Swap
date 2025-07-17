@@ -9,3 +9,5 @@ commands:
     description: Lässt spieler in das Inventar von anderen schauen. Admins können inventare bearbeiten.
   swapnow:
     description: Lässt einen Admin den Swap sofort auslösen
+  reset:
+    description: Lässt einen Admin die Game Welt resetten.

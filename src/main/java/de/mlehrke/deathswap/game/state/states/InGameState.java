@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -51,9 +53,13 @@ public class InGameState extends AbstractGameState implements Listener {
 
     @Override
     public void start() {
-        World world = Bukkit.getWorlds().getFirst();
-        world.getWorldBorder().reset();
+        World world = Bukkit.getWorld("game");
+        if (world == null) {
+            plugin.getLogger().severe("Game world doesnt exist. Skipping...");
+            return;
+        }
         for (Player player : Bukkit.getOnlinePlayers()) {
+            player.teleport(world.getSpawnLocation());
             player.setGameMode(GameMode.SURVIVAL);
             player.setInvulnerable(false);
         }
@@ -69,6 +75,24 @@ public class InGameState extends AbstractGameState implements Listener {
 
     // Event logic
 
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent event) {
+        if (!(this.context.currentState() instanceof InGameState)) return;
+        Player player = event.getPlayer();
+        World world = event.getPlayer().getWorld();
+        Bukkit.getScheduler().runTaskLater(plugin, () -> player.teleport(world.getSpawnLocation()), 5L);
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        if (!(this.context.currentState() instanceof InGameState)) return;
+        Player player = event.getPlayer();
+        World world = Bukkit.getWorld("game");
+        if(world == null) return;
+        player.setGameMode(GameMode.SPECTATOR);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> player.teleport(world.getSpawnLocation()), 5L);
+
+    }
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if (!(this.context.currentState() instanceof InGameState)) return;
