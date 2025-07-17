@@ -8,16 +8,14 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,6 +25,17 @@ public class InGameState extends AbstractGameState implements Listener {
     private final DeathSwapPlugin plugin;
     private final GameStateContext context;
     private final List<Material> allItems;
+    private final Set<Material> STACKING_PLANTS = Set.of(
+            Material.SUGAR_CANE,
+            Material.CACTUS,
+            Material.BAMBOO,
+            Material.KELP,
+            Material.KELP_PLANT,
+            Material.TWISTING_VINES,
+            Material.TWISTING_VINES_PLANT,
+            Material.WEEPING_VINES,
+            Material.WEEPING_VINES_PLANT
+    );
 
     public InGameState(DeathSwapPlugin plugin, GameStateContext context) {
         super(context);
@@ -64,6 +73,18 @@ public class InGameState extends AbstractGameState implements Listener {
 
         List<ItemStack> randomizedDrops = getRandomizedDrops(block);
         randomizedDrops.forEach(drop -> block.getWorld().dropItemNaturally(block.getLocation(), drop));
+
+        // Chain-Reaction für gestapelte Pflanzen
+        if (STACKING_PLANTS.contains(block.getType())) {
+            Block current = block.getRelative(BlockFace.UP);
+            while (STACKING_PLANTS.contains(current.getType())) {
+                current.setType(Material.AIR); // Manuell abbauen, sonst droppt Minecraft selbst
+                List<ItemStack> drops = getRandomizedDrops(current);
+                Block finalCurrent = current;
+                drops.forEach(drop -> finalCurrent.getWorld().dropItemNaturally(finalCurrent.getLocation(), drop));
+                current = current.getRelative(BlockFace.UP);
+            }
+        }
     }
 
     private List<ItemStack> getRandomizedDrops(Block block) {
