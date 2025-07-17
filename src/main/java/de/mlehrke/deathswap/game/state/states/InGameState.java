@@ -51,26 +51,30 @@ public class InGameState extends AbstractGameState implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
-    @Override
     public void start() {
-        World world = Bukkit.getWorld("game");
-        if (world == null) {
-            worldUtil.createWorlds();
-            world = Bukkit.getWorld("game");
-        }
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.teleport(world.getSpawnLocation());
-            player.setGameMode(GameMode.SURVIVAL);
-            player.setInvulnerable(false);
-            ItemStack beef = new ItemStack(Material.COOKED_BEEF);
-            beef.setAmount(64);
-            player.getInventory().addItem(beef);
-        }
-        plugin.swapper().start();
-        context.timer().paused(false); // In case the timer had been reset, it needs to be unpaused to run again
-        context.timer().start();
-    }
+        worldUtil.createWorldAsync("game", World.Environment.NORMAL)
+                .thenAccept(world -> {
+                    // Jetzt ist die Welt sicher geladen
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            player.teleport(world.getSpawnLocation());
+                            player.setGameMode(GameMode.SURVIVAL);
+                            player.setInvulnerable(false);
+                            ItemStack beef = new ItemStack(Material.COOKED_BEEF);
+                            beef.setAmount(64);
+                            player.getInventory().addItem(beef);
+                        }
 
+                        plugin.swapper().start();
+                        context.timer().paused(false);
+                        context.timer().start();
+                    });
+                })
+                .exceptionally(ex -> {
+                    plugin.getLogger().severe("Fehler beim Laden der Welt: " + ex.getMessage());
+                    return null;
+                });
+    }
     @Override
     public void stop() {
         context.timer().reset();
