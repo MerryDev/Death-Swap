@@ -3,6 +3,7 @@ package de.mlehrke.deathswap.game.state.states;
 import de.mlehrke.deathswap.DeathSwapPlugin;
 import de.mlehrke.deathswap.game.state.AbstractGameState;
 import de.mlehrke.deathswap.game.state.GameStateContext;
+import de.mlehrke.deathswap.util.Timer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
@@ -17,11 +18,13 @@ public class LobbyState extends AbstractGameState implements Listener {
 
     private final DeathSwapPlugin plugin;
     private final GameStateContext context;
+    private final Timer timer;
 
     public LobbyState(DeathSwapPlugin plugin, GameStateContext context) {
         super(context);
         this.plugin = plugin;
         this.context = context;
+        this.timer = new Timer(plugin);
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -31,11 +34,14 @@ public class LobbyState extends AbstractGameState implements Listener {
         world.getWorldBorder().setCenter(world.getSpawnLocation());
         world.getWorldBorder().setSize(20);
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+
+        timer.paused(false); // In case the timer had been reset, it needs to be unpaused to run again
+        timer.start();
     }
 
     @Override
     public void stop() {
-
+        timer.reset();
     }
 
 
