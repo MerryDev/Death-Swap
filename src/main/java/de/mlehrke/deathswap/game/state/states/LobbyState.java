@@ -24,6 +24,8 @@ public class LobbyState extends AbstractGameState implements Listener {
 
     @Override
     public void start() {
+        context.timer().reset();
+
         World world = Bukkit.getWorld("pregame");
         if (world == null) {
             plugin.getLogger().severe("Pregame World existiert nicht! Start abgebrochen.");

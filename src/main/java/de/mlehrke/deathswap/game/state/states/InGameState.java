@@ -3,7 +3,6 @@ package de.mlehrke.deathswap.game.state.states;
 import de.mlehrke.deathswap.DeathSwapPlugin;
 import de.mlehrke.deathswap.game.state.AbstractGameState;
 import de.mlehrke.deathswap.game.state.GameStateContext;
-import de.mlehrke.deathswap.util.Timer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -28,7 +27,6 @@ public class InGameState extends AbstractGameState implements Listener {
     private final DeathSwapPlugin plugin;
     private final GameStateContext context;
     private final List<Material> allItems;
-    private final Timer timer;
   
     private final Set<Material> STACKING_PLANTS = Set.of(
             Material.SUGAR_CANE,
@@ -46,7 +44,6 @@ public class InGameState extends AbstractGameState implements Listener {
         super(context);
         this.plugin = plugin;
         this.context = context;
-        this.timer = new Timer(plugin);
         this.allItems = getAllItems();
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
@@ -67,13 +64,13 @@ public class InGameState extends AbstractGameState implements Listener {
             player.getInventory().addItem(beef);
         }
         plugin.swapper().start();
-        timer.paused(false); // In case the timer had been reset, it needs to be unpaused to run again
-        timer.start();
+        context.timer().paused(false); // In case the timer had been reset, it needs to be unpaused to run again
+        context.timer().start();
     }
 
     @Override
     public void stop() {
-        timer.reset();
+        context.timer().reset();
         plugin.swapper().stop();
     }
 
