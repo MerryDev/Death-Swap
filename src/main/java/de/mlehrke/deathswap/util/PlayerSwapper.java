@@ -86,7 +86,7 @@ public class PlayerSwapper {
             player.setVelocity(new Vector(0, 0, 0));
             player.setFallDistance(0f);
 
-            Bukkit.broadcast(Component.text("§e" + player.getName() + " §7wurde mit §e" + to.getName() + " §7geswapped."));
+            Bukkit.broadcast(Component.text("§e" + player.getName() + " §7ist nun in der Trap von §c" + to.getName() + " §7."));
         }
 
         Bukkit.broadcast(Component.text("Alle Spieler wurden zufällig geswapped!", NamedTextColor.GREEN));
