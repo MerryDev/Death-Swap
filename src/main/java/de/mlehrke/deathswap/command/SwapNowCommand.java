@@ -3,7 +3,6 @@ package de.mlehrke.deathswap.command;
 import de.mlehrke.deathswap.DeathSwapPlugin;
 import de.mlehrke.deathswap.game.state.GameStateContext;
 import de.mlehrke.deathswap.game.state.states.InGameState;
-import de.mlehrke.deathswap.util.PlayerSwapper;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,9 +26,8 @@ public class SwapNowCommand implements CommandExecutor {
             return true;
         }
         if (commandSender.hasPermission("deathswap.swapnow")) {
-            PlayerSwapper ps = new PlayerSwapper(plugin);
-            ps.task().cancel();
-            ps.startCountdown();
+            plugin.swapper().task().cancel();
+            plugin.swapper().startCountdown();
         } else {
             commandSender.sendMessage(Component.text("§cDu hast keine berechtigung für diesen Command!"));
         }

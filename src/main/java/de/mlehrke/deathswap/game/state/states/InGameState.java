@@ -3,7 +3,6 @@ package de.mlehrke.deathswap.game.state.states;
 import de.mlehrke.deathswap.DeathSwapPlugin;
 import de.mlehrke.deathswap.game.state.AbstractGameState;
 import de.mlehrke.deathswap.game.state.GameStateContext;
-import de.mlehrke.deathswap.util.PlayerSwapper;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -45,7 +44,7 @@ public class InGameState extends AbstractGameState implements Listener {
             player.setGameMode(GameMode.SURVIVAL);
             player.setInvulnerable(false);
         }
-        new PlayerSwapper(plugin).start();
+        plugin.swapper().start();
     }
 
     @Override
