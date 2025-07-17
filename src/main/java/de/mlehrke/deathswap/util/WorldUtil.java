@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 public class WorldUtil {
 
@@ -34,6 +35,9 @@ public class WorldUtil {
 
     public void deleteWorld(@NotNull World world) {
         String name = world.getName();
+
+        // Spieler raus
+        world.getPlayers().forEach(p -> p.teleport(Bukkit.getWorld("pregame").getSpawnLocation()));
 
         boolean unloaded = Bukkit.unloadWorld(world, false);
         if (!unloaded) {
@@ -76,4 +80,36 @@ public class WorldUtil {
         creator.createWorld();
         plugin.getLogger().info("Done.");
     }
+
+    public CompletableFuture<World> createWorldAsync(String name, World.Environment env) {
+        CompletableFuture<World> future = new CompletableFuture<>();
+
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            plugin.getLogger().info("Generating " + name + "...");
+            WorldCreator creator = new WorldCreator(name);
+            creator.environment(env);
+            creator.type(WorldType.NORMAL);
+            creator.seed(random.nextLong());
+            creator.createWorld(); // startet WorldGen
+        });
+
+        // Warte bis Bukkit.getWorld(name) nicht mehr null ist
+        pollForWorld(name, future, 0);
+        return future;
+    }
+
+    private void pollForWorld(String name, CompletableFuture<World> future, int attempts) {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            World world = Bukkit.getWorld(name);
+            if (world != null) {
+                future.complete(world);
+            } else if (attempts >= 40) {
+                future.completeExceptionally(new IllegalStateException("Welt '" + name + "' wurde nicht rechtzeitig geladen"));
+            } else {
+                pollForWorld(name, future, attempts + 1);
+            }
+        }, 5L); // alle 5 Ticks checken
+    }
+
+
 }
