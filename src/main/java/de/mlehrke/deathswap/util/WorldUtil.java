@@ -56,31 +56,37 @@ public class WorldUtil {
 
     private void createNormalWorld() {
         plugin.getLogger().info("Generating Overworld...");
-        WorldCreator creator = new WorldCreator("game");
-        creator.environment(World.Environment.NORMAL);
-        creator.type(WorldType.NORMAL);
-        creator.seed(random.nextLong());
-        creator.createWorld();
-        plugin.getLogger().info("Done.");
+        new Thread(() -> {
+            WorldCreator creator = new WorldCreator("game");
+            creator.environment(World.Environment.NORMAL);
+            creator.type(WorldType.NORMAL);
+            creator.seed(random.nextLong());
+            creator.createWorld();
+            plugin.getLogger().info("Done.");
+        }).start();
     }
 
     private void createNetherWorld() {
         plugin.getLogger().info("Generating Nether...");
-        WorldCreator creator = new WorldCreator("game_nether");
-        creator.environment(World.Environment.NETHER);
-        creator.type(WorldType.NORMAL);
-        creator.seed(random.nextLong());
-        creator.createWorld();
-        plugin.getLogger().info("Done.");
+        new Thread(() -> {
+            WorldCreator creator = new WorldCreator("game_nether");
+            creator.environment(World.Environment.NETHER);
+            creator.type(WorldType.NORMAL);
+            creator.seed(random.nextLong());
+            creator.createWorld();
+            plugin.getLogger().info("Done.");
+        }).start();
     }
 
     private void createEndWorld() {
         plugin.getLogger().info("Generating End...");
-        WorldCreator creator = new WorldCreator("game_the_end");
-        creator.environment(World.Environment.THE_END);
-        creator.type(WorldType.NORMAL);
-        creator.seed(random.nextLong());
-        creator.createWorld();
-        plugin.getLogger().info("Done.");
+        new Thread(() -> {
+            WorldCreator creator = new WorldCreator("game_the_end");
+            creator.environment(World.Environment.THE_END);
+            creator.type(WorldType.NORMAL);
+            creator.seed(random.nextLong());
+            creator.createWorld();
+            plugin.getLogger().info("Done.");
+        }).start();
     }
 }
