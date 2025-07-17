@@ -43,6 +43,7 @@ public class LobbyState extends AbstractGameState implements Listener {
         World world = Bukkit.getWorlds().getFirst();
         Player player = event.getPlayer();
         Bukkit.getScheduler().runTaskLater(plugin, () -> player.teleport(world.getSpawnLocation()), 5L);
+        player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);
         player.setInvulnerable(true);
     }
