@@ -74,6 +74,16 @@ public class InGameState extends AbstractGameState implements Listener {
                     plugin.getLogger().severe("Fehler beim Laden der Welt: " + ex.getMessage());
                     return null;
                 });
+        worldUtil.createWorldAsync("game_nether", World.Environment.NETHER)
+                .exceptionally(ex -> {
+                    plugin.getLogger().severe("Fehler beim Laden der Welt: " + ex.getMessage());
+                    return null;
+                });
+        worldUtil.createWorldAsync("game_the_end", World.Environment.THE_END)
+                .exceptionally(ex -> {
+                    plugin.getLogger().severe("Fehler beim Laden der Welt: " + ex.getMessage());
+                    return null;
+                });
     }
     @Override
     public void stop() {
