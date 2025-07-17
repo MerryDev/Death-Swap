@@ -9,10 +9,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class DeathSwapPlugin extends JavaPlugin implements Listener {
 
-    GameStateContext context = new GameStateContext(this);
+    GameStateContext context;
 
     @Override
     public void onEnable() {
+        context = new GameStateContext(this);
         registerCommands();
         registerGameState();
         getLogger().info("DeathSwapPlugin enabled!");
